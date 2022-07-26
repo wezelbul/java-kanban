@@ -32,11 +32,11 @@ public class HttpTaskServer {
                 .create();
 
         httpServer = HttpServer.create(new InetSocketAddress(TASK_SERVER_PORT), DEFAULT_BACKLOG);
-        httpServer.createContext("/tasks/task/", new TaskHandler(taskManager, gson));
-        httpServer.createContext("/tasks/subtask/epic/", new SubtaskByIdTaskHandler(taskManager, gson));
-        httpServer.createContext("/tasks/epic/", new EpicTaskHandler(taskManager, gson));
-        httpServer.createContext("/tasks/history/", new HistoryTaskHandler(taskManager, gson));
-        httpServer.createContext("/tasks/", new PrioritizedTaskHandler(taskManager, gson));
+        httpServer.createContext("/tasks/task/", new TaskHandler(taskManager));
+        httpServer.createContext("/tasks/subtask/epic/", new SubtaskByIdTaskHandler(taskManager));
+        httpServer.createContext("/tasks/epic/", new EpicTaskHandler(taskManager));
+        httpServer.createContext("/tasks/history/", new HistoryTaskHandler(taskManager));
+        httpServer.createContext("/tasks/", new PrioritizedTaskHandler(taskManager));
     }
 
     public void start() {

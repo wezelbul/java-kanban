@@ -1,12 +1,8 @@
 package managers.tasks.http;
 
-import api.adapters.DurationAdapter;
-import api.adapters.LocalDateTimeAdapter;
 import api.servers.HttpTaskServer;
 import api.servers.KVServer;
 import api.utils.JsonTaskParser;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParser;
 import managers.tasks.BaseManagerTest;
 import managers.tasks.HttpTaskManager;
@@ -23,8 +19,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static api.Constants.*;
@@ -32,11 +26,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class RequestsTest extends BaseManagerTest<HttpTaskManager> {
-
-    Gson gson = new GsonBuilder()
-            .registerTypeAdapter(Duration.class, new DurationAdapter())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .create();
 
     HttpTaskServer httpTaskServer;
     KVServer kvServer;
@@ -114,9 +103,7 @@ public class RequestsTest extends BaseManagerTest<HttpTaskManager> {
         for (Task onServer : taskManager.getAllTasks()) {
             HttpResponse<String> response = getResponseFromGetRequest(TASK + BY_ID + onServer.getId());
 
-            Task fromServer = JsonTaskParser.parseJsonToTask(
-                    gson,
-                    JsonParser.parseString(response.body()));
+            Task fromServer = JsonTaskParser.parseJsonToTask(JsonParser.parseString(response.body()));
 
             assertEquals(onServer, fromServer, "Задачи не совпадают");
         }
@@ -192,9 +179,7 @@ public class RequestsTest extends BaseManagerTest<HttpTaskManager> {
 
         List<Task> onServer = List.copyOf(tasks);
         List<Task> fromServer = List.copyOf (
-                JsonTaskParser.parseJsonToTaskCollection(
-                        gson,
-                        response.body()));
+                JsonTaskParser.parseJsonToTaskCollection(response.body()));
 
         testLists(onServer, fromServer);
     }
@@ -217,7 +202,7 @@ public class RequestsTest extends BaseManagerTest<HttpTaskManager> {
     void postTaskRequest(String partUrn, Task task) {
         try {
             request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(task)))
+                    .POST(HttpRequest.BodyPublishers.ofString(JsonTaskParser.GSON.toJson(task)))
                     .uri(URI.create(HTTP_PROTOCOL + HOSTNAME + ':' + TASK_SERVER_PORT + partUrn))
                     .version(CLIENT_VERSION)
                     .build();

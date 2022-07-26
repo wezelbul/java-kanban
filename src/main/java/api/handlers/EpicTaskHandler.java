@@ -1,6 +1,6 @@
 package api.handlers;
 
-import com.google.gson.Gson;
+import api.utils.JsonTaskParser;
 import com.sun.net.httpserver.HttpExchange;
 import managers.tasks.TaskManager;
 
@@ -11,8 +11,8 @@ import static api.Constants.GET;
 public class EpicTaskHandler extends AbstractTaskHandler {
 
 
-    public EpicTaskHandler(TaskManager taskManager, Gson gson) {
-        super(taskManager, gson);
+    public EpicTaskHandler(TaskManager taskManager) {
+        super(taskManager);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class EpicTaskHandler extends AbstractTaskHandler {
     }
 
     private String getAllEpics() {
-        return gson.toJson(taskManager.getAllEpics());
+        return JsonTaskParser.GSON.toJson(taskManager.getAllEpics());
     }
 }

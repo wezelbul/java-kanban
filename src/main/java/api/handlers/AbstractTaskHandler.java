@@ -1,6 +1,5 @@
 package api.handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managers.tasks.TaskManager;
@@ -17,14 +16,12 @@ import static java.net.HttpURLConnection.HTTP_OK;
 public abstract class AbstractTaskHandler implements HttpHandler {
 
     protected TaskManager taskManager;
-    protected Gson gson;
 
     protected int statusCode = HTTP_OK;
     protected static final String FIELD_ID = "id";
 
-    public AbstractTaskHandler(TaskManager taskManager, Gson gson) {
+    public AbstractTaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
-        this.gson = gson;
     }
 
     @Override

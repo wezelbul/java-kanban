@@ -7,9 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="java-sprint2-hw" />
+        <module name="java-kanban" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="java-kanban" target="11" />
       <module name="java-sprint2-hw" target="11" />
     </bytecodeTargetLevel>
   </component>

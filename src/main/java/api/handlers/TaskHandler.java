@@ -16,8 +16,8 @@ import static java.net.HttpURLConnection.*;
 
 public class TaskHandler extends AbstractTaskHandler {
 
-    public TaskHandler(TaskManager taskManager, Gson gson) {
-        super(taskManager, gson);
+    public TaskHandler(TaskManager taskManager) {
+        super(taskManager);
     }
 
     @Override
@@ -46,18 +46,18 @@ public class TaskHandler extends AbstractTaskHandler {
             Integer id = getIdFromQuery(queries.get(FIELD_ID));
             if (id != null && id > 0) {
                 if (taskManager.getTaskById(id) != null) {
-                    return gson.toJson(taskManager.getTaskById(id));
+                    return JsonTaskParser.GSON.toJson(taskManager.getTaskById(id));
                 } else {
                     statusCode = HTTP_NOT_FOUND;
-                    return gson.toJson("no data");
+                    return JsonTaskParser.GSON.toJson("no data");
                 }
             }
             else {
                 statusCode = HTTP_BAD_REQUEST;
-                return gson.toJson("incorrect id or field name");
+                return JsonTaskParser.GSON.toJson("incorrect id or field name");
             }
         } else {
-            return gson.toJson(taskManager.getAllTasks());
+            return JsonTaskParser.GSON.toJson(taskManager.getAllTasks());
         }
     }
 
@@ -65,7 +65,7 @@ public class TaskHandler extends AbstractTaskHandler {
         InputStream inputStream = exchange.getRequestBody();
         JsonElement element = JsonParser.parseString(
                 new String(inputStream.readAllBytes(), STANDARD_CHARSET));
-        Task postedTask = JsonTaskParser.parseJsonToTask(gson, element);
+        Task postedTask = JsonTaskParser.parseJsonToTask(element);
 
         if (
                 (postedTask.getId() == null && taskManager.addTask(postedTask))

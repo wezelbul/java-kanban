@@ -1,6 +1,6 @@
 package api.handlers;
 
-import com.google.gson.Gson;
+import api.utils.JsonTaskParser;
 import com.sun.net.httpserver.HttpExchange;
 import managers.tasks.TaskManager;
 
@@ -10,8 +10,8 @@ import static api.Constants.GET;
 
 public class PrioritizedTaskHandler extends AbstractTaskHandler {
 
-    public PrioritizedTaskHandler(TaskManager taskManager, Gson gson) {
-        super(taskManager, gson);
+    public PrioritizedTaskHandler(TaskManager taskManager) {
+        super(taskManager);
     }
 
     @Override
@@ -29,6 +29,6 @@ public class PrioritizedTaskHandler extends AbstractTaskHandler {
     }
 
     private String getPrioritizedTasks() {
-        return gson.toJson(taskManager.getPrioritizedTasks());
+        return JsonTaskParser.GSON.toJson(taskManager.getPrioritizedTasks());
     }
 }
