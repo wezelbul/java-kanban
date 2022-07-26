@@ -1,10 +1,9 @@
 package managers.history;
 
-import mylinkedlist.*;
+import historylinkedlist.*;
 import tasks.Task;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class InMemoryHistoryManager implements HistoryManager {
 

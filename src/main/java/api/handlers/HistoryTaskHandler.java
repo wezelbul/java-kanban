@@ -1,6 +1,6 @@
 package api.handlers;
 
-import com.google.gson.Gson;
+import api.utils.JsonTaskParser;
 import com.sun.net.httpserver.HttpExchange;
 import managers.tasks.TaskManager;
 
@@ -10,8 +10,8 @@ import static api.Constants.*;
 
 public class HistoryTaskHandler extends AbstractTaskHandler {
 
-    public HistoryTaskHandler(TaskManager taskManager, Gson gson) {
-        super(taskManager, gson);
+    public HistoryTaskHandler(TaskManager taskManager) {
+        super(taskManager);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class HistoryTaskHandler extends AbstractTaskHandler {
     }
 
     private String getHistory() {
-        return gson.toJson(taskManager.history());
+        return JsonTaskParser.GSON.toJson(taskManager.history());
     }
 
 }

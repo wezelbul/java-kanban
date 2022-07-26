@@ -1,4 +1,4 @@
-package mylinkedlist;
+package historylinkedlist;
 
 public class Node<T> {
     private T item;
