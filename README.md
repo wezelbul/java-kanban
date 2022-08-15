@@ -89,8 +89,9 @@
 [HttpTaskServer.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/api/servers/HttpTaskServer.java) реализует эндпоинты:
 
 * **GET** /tasks/task [ ?id={id} ] - получить задачу по id, при отсутствии параметра запроса - получить все задачи
-* **POST** /tasks/task [ ?id={id} ] + тело, в формате JSON - добавить/обновить задачу. Тело без id - добавить, с id - обновить
+* **POST** /tasks/task + тело запроса в формате JSON - добавить/обновить задачу. Тело без id - добавить, с id - обновить
 * **DELETE** /tasks/task [ ?id={id} ] - удалить задачу по id, без параметра запроса - удалить все задачи
 * **GET** /tasks/subtask/epic?id={id} - получить список подзадач эпика
+* **GET** /tasks/epic - получить список эпиков
 * **GET** /tasks/ - получить список задач в порядке приоритета
 * **GET** /tasks/history - получить историю
