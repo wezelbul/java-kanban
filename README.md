@@ -3,7 +3,12 @@
 
 ![](https://pictures.s3.yandex.net:443/resources/Untitled_25_1639469823.png)
 
-## Типы задач
+
+<details>
+  
+  <summary><h2>Техническое задание</h2></summary>
+  
+  ## Типы задач
 
 Простейшим кирпичиком такой системы является задача (англ. task). У задачи есть следующие свойства:
 
@@ -27,7 +32,7 @@
 
 ## Менеджер
 
-Менеджер запускается на старте программы и управлять всеми задачами. В нём реализованы следующие функции:
+Менеджер запускается на старте программы и управляет всеми задачами. В нём реализованы следующие функции:
 
 1. Возможность хранить задачи всех типов.
 2. Методы:
@@ -39,9 +44,53 @@
     6. Обновление задачи любого типа по идентификатору. Новая версия объекта передаётся в виде параметра.
     7. Удаление ранее добавленных задач — всех и по идентификатору.
     8. История просмотров задач
+    9. Список задач в порядке возрастания даты начала
 3. Управление статусами осуществляется по следующему правилу:
     1. Менеджер сам не выбирает статус для задачи. Информация о нём приходит менеджеру вместе с информацией о самой задаче.
     2. Для эпиков:
         * если у эпика нет подзадач или все они имеют статус NEW, то статус должен быть NEW.
         * если все подзадачи имеют статус DONE, то и эпик считается завершённым — со статусом DONE.
         * во всех остальных случаях статус должен быть IN_PROGRESS.
+  
+</details>
+
+## Реализация
+
+Данные представлены в виде классов 
+[Task.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/tasks/Task.java), 
+[Subtask.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/tasks/Subtask.java) и 
+[Epic.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/tasks/Epic.java).
+
+Имплементируемые интерфейсы для работы с задачами и историей просмотра - 
+[TaskManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/tasks/TaskManager.java) 
+и 
+[HistoryManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/history/HistoryManager.java) 
+соответственно.
+
+Реализации интерфейсов:
+* [TaskManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/tasks/TaskManager.java):
+    * [InMemoryTaskManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/tasks/InMemoryTasksManager.java) - 
+    работа с задачами в памяти.
+    * [FileBackedTaskManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/tasks/FileBackedTasksManager.java) - 
+    наследует InMemoryTaskManager, позволяет сохранять и восстанавливать состояние в формате csv.
+    * [HttpTaskManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/tasks/HttpTaskManager.java) - 
+    наследует FileBackedTaskManager, позволяет сохранять и восстанавливать состояние на удаленном сервере.
+* [HistoryManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/history/HistoryManager.java):
+    * [InMemoryHistoryManager.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/managers/history/InMemoryHistoryManager.java) - 
+    работа с историей просмотров в памяти.
+
+[KVServer.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/api/servers/KVServer.java) - 
+удаленное хранилище задач. KVServer хранит пары ключ-значение. Ключом являются требуемые объекты, значением соответствующие списки (tasks - список задач, history - список истории просмотров.
+
+[KVTaskClient.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/api/clients/KVTaskClient.java) - 
+используется HttpTaskManager для доступа к KVServer.
+
+
+[HttpTaskServer.java](https://github.com/wezelbul/java-kanban/blob/main/src/main/java/api/servers/HttpTaskServer.java) реализует эндпоинты:
+
+* **GET** /tasks/task [ ?id={id} ] - получить задачу по id, при отсутствии параметра запроса - получить все задачи
+* **POST** /tasks/task [ ?id={id} ] + тело, в формате JSON - добавить/обновить задачу. Тело без id - добавить, с id - обновить
+* **DELETE** /tasks/task [ ?id={id} ] - удалить задачу по id, без параметра запроса - удалить все задачи
+* **GET** /tasks/subtask/epic?id={id} - получить список подзадач эпика
+* **GET** /tasks/ - получить список задач в порядке приоритета
+* **GET** /tasks/history - получить историю
